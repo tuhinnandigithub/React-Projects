@@ -1,4 +1,4 @@
-import React ,{Fragment, useEffect} from 'react';
+import React ,{Fragment,useEffect} from 'react';
 import {BrowserRouter,Route,Switch} from 'react-router-dom';
 import './App.css';
 import Navbar from './components/layouts/Navbar';
@@ -6,23 +6,20 @@ import Landing from './components/layouts/Landing';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Alert from './components/layouts/Alert';
-import setAuthToken from './utils/setAuthToken';
-import { loadUsers } from './actions/auth';
-import store from './store/store'
-import { Provider } from 'react-redux';
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux';
+import {loadUser} from './actions/auth';
+import Dashboard from './components/dashboard/Dashboard';
+import PrivateRoute from './components/routing/PrivateRoute';
 
 
-if(localStorage.token){
-  setAuthToken(localStorage.token)
-}
 
 function App(props) {
-
-  useEffect(() => {
-    store.dispatch(loadUsers());
+  useEffect(()=>{
+    props.loadUser();
   },[])
+
   return (
-    <Provider store = {store}>
     <BrowserRouter>
       <Fragment>
         <Navbar/>
@@ -31,13 +28,15 @@ function App(props) {
           <Alert/>
           <Switch>
             <Route exact path='/login' component={Login}/>
-            <Route exact path='/register' component={Register}/>            
+            <Route exact path='/register' component={Register}/>
+            <PrivateRoute exact path='/dashboard' component={Dashboard}/>
           </Switch>
         </section>
       </Fragment>
     </BrowserRouter>
-    </Provider>
   );
 }
-
-export default App;
+App.propTypes={
+  loadUser:PropTypes.func.isRequired,
+}
+export default connect(null,{loadUser})(App);
