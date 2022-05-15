@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {REGISTER_SUCCESS,REGISTER_FAIL,USER_LOADED,AUTH_ERROR,LOGIN_SUCCESS,LOGIN_FAIL,LOG_OUT} from './types';
+import {REGISTER_SUCCESS,REGISTER_FAIL,USER_LOADED,AUTH_ERROR,LOGIN_SUCCESS,LOGIN_FAIL,LOGOUT,CLEAR_PROFILE} from './types';
 import {setAlert} from './alert';
 import setAuthToken from '../utils/setAuthToken';
 
@@ -13,7 +13,7 @@ export const register =({name,email,password})=> async dispatch=>{
     //prepering post data to json
     const body = JSON.stringify({name,email,password});
     try{
-        const res = await axios.post('api/users',body,config);
+        const res = await axios.post('/api/users',body,config);
 
         dispatch({
             type:REGISTER_SUCCESS,
@@ -76,19 +76,21 @@ export const login =({email,password})=> async dispatch=>{
     }catch(err){
         const errors = err.response.data.errors;
         if(errors){
-            errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+            errors.forEach(p => dispatch(setAlert(p.msg, 'danger')));
         }
 
         dispatch({
             type:LOGIN_FAIL
-        });
+        })
     }
-};
+}
 
-///Log Out / Cear Profile
-
-
-export const logout = () => dispatch => {
-    dispatch({type : LOG_OUT});
-};
-
+// Logout / Clear User Data
+export const logout =()=>dispatch=>{
+    dispatch({
+        type:CLEAR_PROFILE
+    });
+    dispatch({
+        type:LOGOUT
+    });
+}
