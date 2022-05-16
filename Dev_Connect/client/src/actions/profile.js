@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {setAlert} from './alert';
-import {GET_PROFILE,PROFILE_ERROR, CLEAR_PROFILE,GET_PROFILES, UPDATE_PROFILE, ACCOUNT_DELETED} from './types';
+import {GET_PROFILE,PROFILE_ERROR, CLEAR_PROFILE,GET_PROFILES, UPDATE_PROFILE, ACCOUNT_DELETED,GET_REPOS} from './types';
 import setAuthToken from '../utils/setAuthToken';
 
 // Get current user profile
@@ -61,6 +61,23 @@ export const getProfileById =(userId)=>async dispatch=>{
     }
 }
 
+
+// Get  github Repos
+export const getGithubRepos = userName =>async dispatch=>{
+    try{
+        const res = await axios.get(`/api/profile/github/${userName}`);
+        dispatch({
+            type:GET_REPOS,
+            payload:res.data
+        })
+    }catch(err){
+        dispatch({
+            type:PROFILE_ERROR,
+            payload:{msg:err.response.statusText, status:err.response.status}
+        })
+
+    }
+}
 // Create or update Profile
 export const createProfile=(formData,history,edit=false)=> async dispatch=>{
     //const token = localStorage.token;
@@ -200,7 +217,7 @@ export const deleteEducation = (id) => async dispatch =>{
 export const deleteAccount = () => async dispatch =>{
     if(window.confirm('Are you sure? This can not be undone!')){
         try {
-            const res = await axios.delete('/api/profile');
+            await axios.delete('/api/profile');
     
             dispatch({type : CLEAR_PROFILE});
             dispatch({type: ACCOUNT_DELETED});

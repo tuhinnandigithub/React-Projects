@@ -56,7 +56,7 @@ const EditProfile = ({profile:{profile,loading} ,createProfile, getCurrentProfil
             linkedin: loading || !profile.social || !profile.social.linkedin ? '' : profile.social.linkedin,
             instagram: loading || !profile.social || !profile.social.instagram ? '' : profile.social.instagram,
         })
-    },[loading]);
+    },[loading, getCurrentProfile]);
 
     return (
     <Fragment>
